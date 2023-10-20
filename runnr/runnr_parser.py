@@ -86,11 +86,20 @@ class runnr_parser():
 
 
     def runnr_parse_tokens(self, un_p_arguments : str, line_no : int, parsed_data : dict) -> None:
-        tokens = un_p_arguments.split(',')
+        if un_p_arguments.isspace():
+            print(f'runnr: syntax error: config: at least one argument is required for an defined extension at line number {line_no}')
+            exit(1)
+
+        tokens : [str] = un_p_arguments.split(',')
         
         for i in range(len(tokens)):
-            if tokens[i] in [' ', '\n']:
-                continue
+            if not tokens[i]:
+                print(f'runnr: syntax error: config: unnecessary "," at line number {line_no}')
+                exit(1)
+
+            if tokens[i].isspace():
+                print(f'runnr: syntax error: config: empty argument between "," at line number {line_no}')
+                exit(1)
 
             if tokens[i].find('"') == -1:
                 print(f'runnr: syntax error: config: error at line number {line_no}. All arguments\'s parameters much be wrapped in " "')
