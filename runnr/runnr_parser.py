@@ -46,7 +46,7 @@ class runnr_parser():
         elif os_p in ['linux', 'darwin']:
             self.path_of_config = os.path.expanduser('~') + '/.config/runnr.conf' 
         else:
-            print(f'runr: error: {os_p} is not supported at the moment')
+            print(f'runnr: error: {os_p} is not supported at the moment')
             exit(1)
 
 
@@ -55,10 +55,14 @@ class runnr_parser():
             return
         
         if line.find('::') == -1:
-            print(f'runnr: error: config: no argument separater "::" found in "{line}" at line number {line_no}')
+            print(f'runnr: error: config: no argument separetar "::" found in "{line}" at line number {line_no}')
             exit(1)
         
         parsed_data_list = {}
+        if line.count('::') > 1:
+            print(f'runnr: syntax error: config: multiple argument separetar "::" in "{line}" at line number {line_no}')
+            exit(1)
+
         un_p_extension, un_p_arguments = line.split('::')
         self.runnr_parse_extension(un_p_extension, line_no, parsed_data_list)
         self.runnr_parse_tokens(un_p_arguments, line_no, parsed_data_list)
@@ -69,9 +73,9 @@ class runnr_parser():
 
     def runnr_parse_extension(self, un_p_extension : str, line_no : int, parsed_data : dict) -> None:
         extension = un_p_extension[un_p_extension.find('(') + 1 : un_p_extension.rfind(')')].replace(' ', '')
-        
-        if extension.find(')') == -1 or extension.find('(') == -1:
-            print(f'runr: syntax error: config: multiple parentheses in "{un_p_extension}" at line number {line_no}. Extension must be wrapped with only one level of parentheses "(<extension>)"')
+
+        if extension.find(')') != -1 or extension.find('(') != -1:
+            print(f'runnr: syntax error: config: multiple parentheses in "{un_p_extension}" at line number {line_no}. Extension must be wrapped with only one level of parentheses "(<extension>)"')
             exit(1)
 
         if not extension[1:].isalpha():
