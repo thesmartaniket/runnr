@@ -192,4 +192,4 @@ runnr --version
 ```
 
 # VERSION:
->v0.0.8
+>v0.1.0

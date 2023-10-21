@@ -1,2 +1,2 @@
 class runnr_ver:
-    ver = 'v0.0.8'
+    ver = 'v0.1.0'
