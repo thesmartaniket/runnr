@@ -30,7 +30,7 @@ This runnr.conf is the main config file that runnr use to execute commands based
 ```
 (<extension>) :: <arguemnt1> = "<parameter1>",  <arguemnt2> = "<parameter2>", ....
 ```
-All "<argument>" = "<parameter>" are separateed using ','. You can even comment in this config file using '#' and white Spaces are ignored automatically.
+All `<argument> = <parameter>` are separateed using ','. You can even comment in this config file using '#' and white Spaces are ignored automatically.
 
 - Example:
 
