@@ -171,13 +171,13 @@ Sometimes developers need to see what actually getting executed by runnr to find
 
 Examples:
 ```bash
-runnr -debug -out -param "-std=c++11" helloworld hello.cpp
+runnr -debug -out helloworld -param "-std=c++11" hello.cpp
 ```
 
 OUTPUT:
 ```bash
 runnr: debug: config: using config from /Users/aniket/.config/runnr.conf
-runnr: debug: executed: g++ -o helloworld hello.cpp
+runnr: debug: executed: g++ -std=c++11 -o helloworld hello.cpp
 runnr: debug: run: ./helloworld
 Hello, World
 ```
@@ -192,4 +192,4 @@ runnr --version
 ```
 
 # VERSION:
->v0.1.0
+>v0.1.1
