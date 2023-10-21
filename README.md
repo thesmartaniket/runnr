@@ -23,19 +23,16 @@ Unix-like: ~\.config\runnr.conf
 
 >If config file is not present the try running: runnr --version
 
-This runnr.conf is the main config file that runnr use to execute commands based on file-extension. Once the 
-configuration is set for any file-extension runnr can execute and run it without any problem. As runnr is a 
-config file based tool, it is very easy to use the same config file in different system only after setting 
-it up once.
+This runnr.conf is the main config file that runnr use to execute commands based on file-extension. Once the configuration is set for any file-extension runnr can execute and run it without any problem. As runnr is a config file based tool, it is very easy to use the same config file in different system only after setting it up once.
 
 - ### Syntax of the config file:
 
 ```
 (<extension>) :: <arguemnt1> = "<parameter1>",  <arguemnt2> = "<parameter2>", ....
 ```
-All <argument> = <parameter> are separateed using ','. You can even comment in this config file using '#' and white Spaces are ignored automatically.
+All "<argument>" = "<parameter>" are separateed using ','. You can even comment in this config file using '#' and white Spaces are ignored automatically.
 
-- Examples:
+- Example:
 
 ```
 #for adding support for .c files, we simply can write:-
@@ -50,7 +47,7 @@ As of version: v0.0.8 suppported aruments are:
 ```
 1. COMPILER="<compiler-name>"
 2. INTERPRETER="<interpreter-name>"
-3. USE=<cli-program> : It is used for speacial arguments like "-open"
+3. USE=<cli-program> : It is used for special arguments like "-open"
 4. OUTPUT_FILENAME=<variables or name> : It is used for setting special output name.
 ```
 
@@ -58,7 +55,7 @@ As of version: v0.0.8 suppported aruments are:
 ```
 $FILE : It sets the output name to be same as input file name but without the extension.
 $NONE : It is mostly used for interpreter based languages, as those don't have any compiled file.
-        Using $NONE on compiled based languages, turns of generation of any custom output file.
+        Using $NONE on compiled based languages, turns off generation of any custom output file.
 
 <any-custom-name> : Creates an output file with the given name.
 ```
@@ -85,7 +82,7 @@ OUTPUT: v0.x.x
 Now if it is installed correctly, lets proceed with its usages:-
 
 - ### Comiling or Interpreting a file:
-runnr can compile or interpret different programs based on extensions from runnr.conf file. Now lets see some examples. Suppose we have hello.py & hello.cpp file with "Hello, World" printing program.
+runnr can compile or interpret different programs based on extensions from runnr.conf file. Now lets see some examples. Suppose we have "hello.py" & "hello.cpp" file with "Hello, World" printing program.
 
 Then to run this files:
 ``` bash
@@ -103,7 +100,7 @@ OUTPUT: Hello, World
 It can execute both the different files based on .conf file.
 
 - ### Only compiling not executing:
-We can make runnr only compile programs but not execute it by using '-run' argument.
+We can make runnr to only compile a programs but not execute it by using '-run' argument.
 
 Example:
 ```bash
@@ -193,3 +190,6 @@ To check the version of runnr:
 ```bash
 runnr --version
 ```
+
+# VERSION:
+>v0.0.8
