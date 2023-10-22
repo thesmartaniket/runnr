@@ -182,7 +182,7 @@ runnr: debug: run: ./helloworld
 Hello, World
 ```
 
-Using the "-debug " gives a detailed output of the underneath commands execution.
+Using the "-debug" gives a detailed output of the underneath commands execution.
 
 - ### Version:
 To check the version of runnr:
@@ -200,4 +200,15 @@ runnr -h
 ```
 
 # VERSION:
+- Version rule :: `<major>.<minor>.<patches>`
 >v0.1.2
+
+# ADDED IN BETA:
+- Version rule :: `<major>.<minor>.<patches>b<beta-version>`
+## v0.1.2b0
+- Removed auto copying of "runnr.conf" while building the "setup.py".
+- Added help option "-help" or "-h".
+- Fixed the issue where runnr detects the single argument as file with no extension.
+
+## v0.1.2b1
+- Fixed the issue where runnr ignore cli arguments for interpreted languages.
