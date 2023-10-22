@@ -200,4 +200,4 @@ runnr -h
 ```
 
 # VERSION:
->v0.1.2b
+>v0.1.2

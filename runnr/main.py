@@ -12,6 +12,7 @@ argc = len(sys.argv)
 argv = sys.argv
 
 class runnr():
+    #intialises the runnr
     def __init__(self):
         self.test_argv()
         self.parser = runnr_parser()
@@ -22,19 +23,22 @@ class runnr():
         self.build_commands()
         exit(0)
 
-
+    #function to test if there is any argument or not
+    #parameters: none
+    #returns: none
     def test_argv(self) -> None:
         if argc <= 1:
             print('runnr: error: no input file')
             exit(1)
 
-
+    #function to return the output name & its command if it compiled based language else list of empty strings
+    #parameters: configuration row for the given extension : dictionary
+    #returns: [file_name_without_extension, file_name_with_output_command] : [str, str]
     def output_name(self, configs : [dict]) -> [str]:
         if configs['type'] == 'c':
             if self.flags.b_custom_output_name:
                 return [f'{self.flags.s_custom_output_file_name}', f'-o {self.flags.s_custom_output_file_name}']
             
-
             match configs['out']:
                 case '$FILE':
                     return [f'{self.flags.s_file_name}', f'-o {self.flags.s_file_name}']
@@ -47,14 +51,18 @@ class runnr():
         else:
             return ['', '']
 
-
+    #function to return the arguments for compiler/interpreter
+    #parameters: none
+    #returns: arguments : str
     def executor_param(self) -> str:
         if self.flags.b_extra_param:
             return self.flags.s_extra_param_list
         else:
             return ''
 
-
+    #function to execute the executable file if it is compiled based language and show the ran command if debug is set
+    #parameters: output_file_name : str, status_of_previous_ran_code : int
+    #returns: none
     def execute(self, output_name : str, status : int) -> None:
         if output_name and not status:
             if sys.platform == 'win32':
@@ -79,7 +87,9 @@ class runnr():
                         print(f'runnr: debug: run: "./{output_name}"')
                     system(f'./{output_name}')
 
-
+    #function to iterate over all the arguments and set the parameters
+    #parameters: none
+    #returns: none
     def setup_cli_param(self) -> None:
         self.check_first_param()
 
@@ -138,7 +148,9 @@ class runnr():
         
             i += 1
     
-
+    #function to check first and only parameter
+    #parameters: none
+    # returns: none    
     def check_first_param(self) -> None:
         if argv[1] in ['--version', '-V']:
             print(f'{ver.ver}')
@@ -165,7 +177,9 @@ class runnr():
             print(f'runnr: error: bad option: "{argv[1]}"')
             exit(1)
 
-
+    #function to split the name by '.' dot
+    #parameters: none
+    #returns: none
     def split_extension(self) -> None:
         index = argv[argc - 1].rfind('.')
 
@@ -176,7 +190,9 @@ class runnr():
         self.flags.s_file_name = argv[argc - 1][:index]
         self.flags.s_extension = argv[argc - 1][index:]
 
-
+    #function to build the final command based on all the configs
+    #parameters: none
+    #returns: none
     def build_commands(self) -> None:
         config : dict = self.parser.runnr_get_extension_config(self.flags.s_extension)
 
@@ -185,7 +201,8 @@ class runnr():
             exit(1)
 
         [output_name, output_command_w_name] = self.output_name(config)
-        command = f"{config['executor']} {self.executor_param()} {argv[argc - 1]} {output_command_w_name}"
+        args_for_i = self.flags.s_extra_args_list if self.flags.b_extra_args and config['type'] == 'i' else ''
+        command = f"{config['executor']}{self.executor_param()} {argv[argc - 1]} {output_command_w_name}{args_for_i}"
 
         if self.flags.b_debug_mode:
             print(f'runnr: debug: config: using config from "{self.parser.path_of_config}"')
