@@ -189,7 +189,15 @@ To check the version of runnr:
 
 ```bash
 runnr --version
+runnr -V
+```
+
+- ### Help:
+
+```bash
+runnr --help
+runnr -h
 ```
 
 # VERSION:
->v0.1.1
+>v0.1.2b

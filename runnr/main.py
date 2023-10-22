@@ -46,13 +46,15 @@ class runnr():
                     return [f"{configs['out']}", f"-o {configs['out']}"]
         else:
             return ['', '']
-            
+
+
     def executor_param(self) -> str:
         if self.flags.b_extra_param:
             return self.flags.s_extra_param_list
         else:
             return ''
-        
+
+
     def execute(self, output_name : str, status : int) -> None:
         if output_name and not status:
             if sys.platform == 'win32':
@@ -79,19 +81,7 @@ class runnr():
 
 
     def setup_cli_param(self) -> None:
-        if argv[1] in ['--version', '-v']:
-            print(f'{ver.ver}')
-            exit(0)
-
-        if argv[1] == '-open':
-            for rows in self.parser.runnr_config_table:
-                if rows['extension'] == argv[1]:
-                    system(f"{rows['executor']} {argv[argc - 1]}")
-                    exit(0)
-                
-            print(f'runnr: error: no  "-open" config found in "{self.parser.path_of_config}"')
-            exit(1)
-
+        self.check_first_param()
 
         i = 1
         while(i < argc - 1):
@@ -148,6 +138,33 @@ class runnr():
         
             i += 1
     
+
+    def check_first_param(self) -> None:
+        if argv[1] in ['--version', '-V']:
+            print(f'{ver.ver}')
+            exit(0)
+
+        if argv[1] == '-open':
+            if argc == 2:
+                print('runnr: error: no input file for "-open"')
+                exit(1)
+
+            for rows in self.parser.runnr_config_table:
+                if rows['extension'] == argv[1]:
+                    system(f"{rows['executor']} {argv[argc - 1]}")
+                    exit(0)
+
+            print(f'runnr: error: no  "-open" config found in "{self.parser.path_of_config}"')
+            exit(1)
+
+        if argv[1] in ['--help', '-h']:
+            print(ver.runnr_help)
+            exit(0)
+
+        if argc == 2 and argv[1][0] == '-':
+            print(f'runnr: error: bad option: "{argv[1]}"')
+            exit(1)
+
 
     def split_extension(self) -> None:
         index = argv[argc - 1].rfind('.')
