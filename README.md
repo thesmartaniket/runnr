@@ -72,9 +72,9 @@ Now lets see how to interact with the runnr tool :-
 
 First lets see if it installed or not? : Simply Type-
 ```bash
-runnr --version
+$ runnr --version
+v0.x.x
 ```
-OUTPUT: v0.x.x
 
 >If any error occurs then install runnr first.
 >If it prompts to create config file, enter "Y". Then retry with the command.
@@ -86,16 +86,16 @@ runnr can compile or interpret different programs based on extensions from runnr
 
 Then to run this files:
 ``` bash
-runnr hello.py
+$ runnr hello.py
+Hello, World
 ```
 
-OUTPUT: Hello, World
 
 ```bash
-runnr hello.cpp
+$ runnr hello.cpp
+Hello, World
 ```
 
-OUTPUT: Hello, World
 
 It can execute both the different files based on .conf file.
 
@@ -104,7 +104,7 @@ We can make runnr to only compile a programs but not execute it by using '-run' 
 
 Example:
 ```bash
-runnr -run N hello.cpp
+$ runnr -run N hello.cpp
 ```
 
 It outputs nothing as we set running after compilation to off. It just generates the binary executable file.
@@ -117,10 +117,10 @@ We can make runnr to output the compiled executable file-name as we want it to b
 
 Examples:
 ```bash
-runnr -run N -out helloworld hello.cpp
-./helloworld
+$ runnr -run N -out helloworld hello.cpp
+$ ./helloworld
+Hello, World
 ```
-OUTPUT: Hello, World
 >Yes, we can use these different arguments and parameters all together.
 So, "-out" argument takes only one parameter that is the file name of the output file.
 
@@ -133,7 +133,7 @@ This can be achieved by two ways:
 Modifying the runnr.conf file for ".cpp" extension.
 
 Examples:
-```bash
+```
 #this will use C++11 std library
 (.cpp)::COMPILER="g++ -std=c++11", OUTPUT_FILENAME="a.out"
 ```
@@ -143,13 +143,13 @@ For single file use cases.
 
 Examples:
 ```bash
-runnr -param "-std=c++11" -out helloworld hello.cpp
+$ runnr -param "-std=c++11" -out helloworld hello.cpp
 ```
 
 "-param" takes the compiler arguemnt and directly pass it to the compiler. It is also a good practice to wrap them in "". "-param" can also be used to link to libaries too.
 
 ```bash
-runnr -param -lm -out sqrt square_root.c
+$ runnr -param -lm -out sqrt square_root.c
 ```
 
 - ### Execuable file's command-line arguemnts:
@@ -160,7 +160,8 @@ Suppose we have written a program which takes 2 number directly from command lin
 Examples:
 
 ```bash
-runnr -args "5 7" sum_2_no.c
+$ runnr -args "5 7" sum_2_no.c
+12
 ```
 
 Again it is necessary to wrap the arguemnts within "" as it containes spaces.
@@ -171,11 +172,7 @@ Sometimes developers need to see what actually getting executed by runnr to find
 
 Examples:
 ```bash
-runnr -debug -out helloworld -param "-std=c++11" hello.cpp
-```
-
-OUTPUT:
-```bash
+$ runnr -debug -out helloworld -param "-std=c++11" hello.cpp
 runnr: debug: config: using config from /Users/aniket/.config/runnr.conf
 runnr: debug: executed: g++ -std=c++11 -o helloworld hello.cpp
 runnr: debug: run: ./helloworld
@@ -188,27 +185,40 @@ Using the "-debug" gives a detailed output of the underneath commands execution.
 To check the version of runnr:
 
 ```bash
-runnr --version
-runnr -V
+$ runnr --version
+v0.x.x
+$ runnr -V
+v0.x.x
 ```
 
 - ### Help:
 
 ```bash
-runnr --help
-runnr -h
+$ runnr --help
+$ runnr -h
+```
+
+- ## Update:
+Update runnr using `--update or -U` option. It uses pip to update itself.
+```bash
+$ runnr --update
+$ runnr -U
 ```
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.1.2
+>v0.1.2 {NEXT}
 
 # ADDED IN BETA:
 - Version rule :: `<major>.<minor>.<patches>b<beta-version>`
 ## v0.1.2b0
 - Removed auto copying of "runnr.conf" while building the "setup.py".
-- Added help option "-help" or "-h".
+- Added help option "--help" or "-h".
 - Fixed the issue where runnr detects the single argument as file with no extension.
 
 ## v0.1.2b1
 - Fixed the issue where runnr ignore cli arguments for interpreted languages.
+
+## v0.1.2b2
+- Removed unnecessary boolean variables from runnr_flags and replaced them with string operations.
+- Added "--update" or "-U" option to automatically update runnr using pip.

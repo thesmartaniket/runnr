@@ -7,14 +7,12 @@ class runnr_flags:
     l_file_names : list
 
     b_run_after_compilatiion : bool
-    b_custom_output_name : bool
     b_debug_mode : bool
     b_extra_param : bool
     b_extra_args : bool
     b_multiple_files : bool
     def __init__(self):
         self.b_run_after_compilatiion = True
-        self.b_custom_output_name = False
         self.b_debug_mode = False
         self.b_extra_param = False
         self.b_extra_args = False

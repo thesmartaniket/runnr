@@ -34,6 +34,10 @@ class runnr():
             self.split_extension()
             self.build_commands()
             exit(0)
+        self.split_extension()
+        self.build_commands()
+        
+        exit(0)
 
     #function to test if there is any argument or not
     #parameters: none
@@ -48,7 +52,7 @@ class runnr():
     #returns: [file_name_without_extension, file_name_with_output_command] : [str, str]
     def output_name(self, configs : [dict]) -> [str]:
         if configs['type'] == 'c':
-            if self.flags.b_custom_output_name:
+            if self.flags.s_custom_output_file_name:
                 return [f'{self.flags.s_custom_output_file_name}', f'-o {self.flags.s_custom_output_file_name}']
             
             match configs['out']:
@@ -67,8 +71,8 @@ class runnr():
     #parameters: none
     #returns: arguments : str
     def executor_param(self) -> str:
-        if self.flags.b_extra_param:
-            return self.flags.s_extra_param_list
+        if self.flags.s_extra_param:
+            return self.flags.s_extra_param
         else:
             return ''
 
@@ -78,22 +82,22 @@ class runnr():
     def execute(self, output_name : str ,status : int) -> None:
         if output_name and not status:
             if sys.platform == 'win32':
-                if self.flags.b_extra_args:
+                if self.flags.s_extra_args:
                     if self.flags.b_debug_mode:
-                        print(f'runnr: debug: run: ".\\{output_name} {self.flags.s_extra_args_list}"')
+                        print(f'runnr: debug: run: ".\\{output_name} {self.flags.s_extra_args}"')
 
-                    system(f'.\\{output_name}  {self.flags.s_extra_args_list}')
+                    system(f'.\\{output_name}  {self.flags.s_extra_args}')
                 else:
                     if self.flags.b_debug_mode:
                         print(f'runnr: debug: run: ".\\{output_name}"')
                     system(f'.\\{output_name}')
 
             elif sys.platform in ['darwin', 'linux']:
-                if self.flags.b_extra_args:
+                if self.flags.s_extra_args:
                     if self.flags.b_debug_mode:
-                        print(f'runnr: debug: run: "./{output_name} {self.flags.s_extra_args_list}"')
+                        print(f'runnr: debug: run: "./{output_name} {self.flags.s_extra_args}"')
                         
-                    system(f'./{output_name} {self.flags.s_extra_args_list}')
+                    system(f'./{output_name} {self.flags.s_extra_args}')
                 else:
                     if self.flags.b_debug_mode:
                         print(f'runnr: debug: run: "./{output_name}"')
@@ -127,8 +131,7 @@ class runnr():
                         exit(1)
 
                 case '-out':
-                    if not self.flags.b_custom_output_name:
-                        self.flags.b_custom_output_name = True
+                    if not self.flags.s_custom_output_file_name:
                         self.flags.s_custom_output_file_name = argv[i + 1]
                         i += 1
                     else:
@@ -136,18 +139,16 @@ class runnr():
                         exit(1)
 
                 case '-param':
-                    if not self.flags.b_extra_param:
-                        self.flags.b_extra_param = True
-                        self.flags.s_extra_param_list = argv[i + 1]
+                    if not self.flags.s_extra_param:
+                        self.flags.s_extra_param = argv[i + 1]
                         i += 1
                     else:
                         print('runnr: error: multiple use of "-param"')
                         exit(1)
 
                 case '-args':
-                    if not self.flags.b_extra_args:
-                        self.flags.b_extra_args = True
-                        self.flags.s_extra_args_list = argv[i + 1]
+                    if not self.flags.s_extra_args:
+                        self.flags.s_extra_args = argv[i + 1]
                         i += 1
                     else:
                         print('runnr: error: multiple use of "-args"')
@@ -174,6 +175,14 @@ class runnr():
             print(f'{ver.ver}')
             exit(0)
 
+        if argv[1] in ['--help', '-h']:
+            print(ver.runnr_help)
+            exit(0)
+
+        if argv[1] in ['--update', '-U']:
+            system('pip install --upgrade runnr')
+            exit(0)
+
         if argv[1] == '-open':
             if argc == 2:
                 print('runnr: error: no input file for "-open"')
@@ -186,10 +195,6 @@ class runnr():
 
             print(f'runnr: error: no  "-open" config found in "{self.parser.path_of_config}"')
             exit(1)
-
-        if argv[1] in ['--help', '-h']:
-            print(ver.runnr_help)
-            exit(0)
 
         if argc == 2 and argv[1][0] == '-':
             print(f'runnr: error: bad option: "{argv[1]}"')
