@@ -1,6 +1,5 @@
 import sys
 from os import system
-
 from .runnr_parser import runnr_parser
 from .runnr_flags import runnr_flags
 from .runnr_ver import runnr_ver
@@ -19,9 +18,22 @@ class runnr():
         self.flags = runnr_flags()
         self.parser.init()
         self.setup_cli_param()
-        self.split_extension()
-        self.build_commands()
-        exit(0)
+
+        if self.flags.b_multiple_files :
+            print("#"*15)
+            for i in range(len(self.flags.l_file_names)):
+                file=self.flags.l_file_names[i]
+                self.split_extension(filename=file)
+                print(file,"\n","*"*20)
+                self.build_commands(filename=file)
+                print("*"*20)
+
+            print("#"*15)                
+            exit(0)
+        else:
+            self.split_extension()
+            self.build_commands()
+            exit(0)
 
     #function to test if there is any argument or not
     #parameters: none
@@ -63,7 +75,7 @@ class runnr():
     #function to execute the executable file if it is compiled based language and show the ran command if debug is set
     #parameters: output_file_name : str, status_of_previous_ran_code : int
     #returns: none
-    def execute(self, output_name : str, status : int) -> None:
+    def execute(self, output_name : str ,status : int) -> None:
         if output_name and not status:
             if sys.platform == 'win32':
                 if self.flags.b_extra_args:
@@ -141,6 +153,12 @@ class runnr():
                         print('runnr: error: multiple use of "-args"')
                         exit(1)
 
+                case '-files' :
+                        if not self.flags.b_multiple_files:
+                            self.flags.b_multiple_files=True
+                            self.flags.l_file_names =argv[i+1:]
+                        # if self.flags.b_multiple_files    
+
                 case _:
                     if argv[i][0] == '-':
                         print(f'runnr: error: bad option: "{argv[i]}"')
@@ -180,35 +198,34 @@ class runnr():
     #function to split the name by '.' dot
     #parameters: none
     #returns: none
-    def split_extension(self) -> None:
-        index = argv[argc - 1].rfind('.')
+    def split_extension(self , filename=argv[argc - 1]) -> None:
+        index = filename.rfind('.')
 
         if index == -1:
             print(f'runnr: error: input file "{argv[argc - 1]}" has no extension')
             exit(1)
 
-        self.flags.s_file_name = argv[argc - 1][:index]
-        self.flags.s_extension = argv[argc - 1][index:]
+        self.flags.s_file_name = filename[:index]
+        self.flags.s_extension = filename[index:]
 
     #function to build the final command based on all the configs
     #parameters: none
     #returns: none
-    def build_commands(self) -> None:
+    def build_commands(self,filename=argv[argc - 1]) -> None:
         config : dict = self.parser.runnr_get_extension_config(self.flags.s_extension)
-
         if not config:
             print(f'runnr: error: file format is not found in "{self.parser.path_of_config}". Please add it to use it.')
             exit(1)
 
         [output_name, output_command_w_name] = self.output_name(config)
         args_for_i = self.flags.s_extra_args_list if self.flags.b_extra_args and config['type'] == 'i' else ''
-        command = f"{config['executor']}{self.executor_param()} {argv[argc - 1]} {output_command_w_name}{args_for_i}"
+        command = f"{config['executor']}{self.executor_param()} {filename} {output_command_w_name}{args_for_i}"
 
         if self.flags.b_debug_mode:
             print(f'runnr: debug: config: using config from "{self.parser.path_of_config}"')
             print(f'runnr: debug: executed: "{command}"')
-
+        
         status = system(command)
 
         if self.flags.b_run_after_compilatiion:
-            self.execute(output_name, status)
+            self.execute(output_name,status)
