@@ -19,21 +19,14 @@ class runnr():
         self.parser.init()
         self.setup_cli_param()
 
-        if self.flags.b_multiple_files :
-            print("#"*15)
-            for i in range(len(self.flags.l_file_names)):
-                file=self.flags.l_file_names[i]
-                self.split_extension(filename=file)
-                print(file,"\n","*"*20)
-                self.build_commands(filename=file)
-                print("*"*20)
+        if self.flags.l_file_names:
+            for file in self.flags.l_file_names:
+                print(f'runnr: file: {file}')
+                self.split_extension(file)
+                self.build_commands(file)
+                print()
+            exit(0)
 
-            print("#"*15)                
-            exit(0)
-        else:
-            self.split_extension()
-            self.build_commands()
-            exit(0)
         self.split_extension()
         self.build_commands()
         exit(0)
@@ -51,6 +44,12 @@ class runnr():
     #returns: [file_name_without_extension, file_name_with_output_command] : [str, str]
     def output_name(self, configs : [dict]) -> [str]:
         if configs['type'] == 'c':
+            if self.flags.l_file_names:
+                if self.flags.s_custom_output_file_name:
+                    print('runnr: warning: "-out" option does not work while using "-files".')
+
+                return [f'{self.flags.s_file_name}', f'-o {self.flags.s_file_name}']
+            
             if self.flags.s_custom_output_file_name:
                 return [f'{self.flags.s_custom_output_file_name}', f'-o {self.flags.s_custom_output_file_name}']
             
@@ -71,6 +70,10 @@ class runnr():
     #returns: arguments : str
     def executor_param(self) -> str:
         if self.flags.s_extra_param:
+            if self.flags.l_file_names:
+                print('runnr: warning: "-param" option does not work while using "-files".')
+                return ''
+            
             return self.flags.s_extra_param
         else:
             return ''
@@ -117,7 +120,7 @@ class runnr():
                     elif argv[i + 1] == 'N':
                         self.flags.b_run_after_compilatiion = False
                     else:
-                        print(f'runnr: error: invalid parameter "{argv[i + 1]}" for "-run"');
+                        print(f'runnr: error: invalid parameter "{argv[i + 1]}" for option "-run"');
                         exit(1)
                      
                     i += 1
@@ -126,7 +129,7 @@ class runnr():
                     if not self.flags.b_debug_mode:
                         self.flags.b_debug_mode = True
                     else:
-                        print('runnr: error: multiple use of "-debug"')
+                        print('runnr: error: multiple use of option "-debug"')
                         exit(1)
 
                 case '-out':
@@ -134,7 +137,7 @@ class runnr():
                         self.flags.s_custom_output_file_name = argv[i + 1]
                         i += 1
                     else:
-                        print('runnr: error: multiple use of "-out"')
+                        print('runnr: error: multiple use of option "-out"')
                         exit(1)
 
                 case '-param':
@@ -142,7 +145,7 @@ class runnr():
                         self.flags.s_extra_param = argv[i + 1]
                         i += 1
                     else:
-                        print('runnr: error: multiple use of "-param"')
+                        print('runnr: error: multiple use of option "-param"')
                         exit(1)
 
                 case '-args':
@@ -150,14 +153,12 @@ class runnr():
                         self.flags.s_extra_args = argv[i + 1]
                         i += 1
                     else:
-                        print('runnr: error: multiple use of "-args"')
+                        print('runnr: error: multiple use of option "-args"')
                         exit(1)
 
-                case '-files' :
-                        if not self.flags.b_multiple_files:
-                            self.flags.b_multiple_files=True
-                            self.flags.l_file_names =argv[i+1:]
-                        # if self.flags.b_multiple_files    
+                case '-files':
+                    self.flags.l_file_names = argv[i+1:]
+                    return
 
                 case _:
                     if argv[i][0] == '-':
@@ -192,7 +193,7 @@ class runnr():
                     system(f"{rows['executor']} {argv[argc - 1]}")
                     exit(0)
 
-            print(f'runnr: error: no  "-open" config found in "{self.parser.path_of_config}"')
+            print(f'runnr: error: no config for "-open" found in "{self.parser.path_of_config}"')
             exit(1)
 
         if argc == 2 and argv[1][0] == '-':
@@ -202,11 +203,11 @@ class runnr():
     #function to split the name by '.' dot
     #parameters: none
     #returns: none
-    def split_extension(self , filename=argv[argc - 1]) -> None:
+    def split_extension(self , filename = argv[argc - 1]) -> None:
         index = filename.rfind('.')
 
         if index == -1:
-            print(f'runnr: error: input file "{argv[argc - 1]}" has no extension')
+            print(f'runnr: error: input file "{filename}" has no extension')
             exit(1)
 
         self.flags.s_file_name = filename[:index]
@@ -215,14 +216,14 @@ class runnr():
     #function to build the final command based on all the configs
     #parameters: none
     #returns: none
-    def build_commands(self,filename=argv[argc - 1]) -> None:
+    def build_commands(self,filename = argv[argc - 1]) -> None:
         config : dict = self.parser.runnr_get_extension_config(self.flags.s_extension)
         if not config:
             print(f'runnr: error: file format is not found in "{self.parser.path_of_config}". Please add it to use it.')
             exit(1)
 
         [output_name, output_command_w_name] = self.output_name(config)
-        args_for_i = self.flags.s_extra_args_list if self.flags.b_extra_args and config['type'] == 'i' else ''
+        args_for_i = self.flags.s_extra_args if self.flags.s_extra_args and config['type'] == 'i' else ''
         command = f"{config['executor']}{self.executor_param()} {filename} {output_command_w_name}{args_for_i}"
 
         if self.flags.b_debug_mode:

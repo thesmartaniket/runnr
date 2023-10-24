@@ -82,7 +82,7 @@ v0.x.x
 Now if it is installed correctly, lets proceed with its usages:-
 
 - ### Comiling or Interpreting a file:
-runnr can compile or interpret different programs based on extensions from runnr.conf file. Now lets see some examples. Suppose we have "hello.py" & "hello.cpp" file with "Hello, World" printing program.
+runnr can compile or interpret different programs based on extensions from "runnr.conf" file. Now lets see some examples. Suppose we have "hello.py" & "hello.cpp" file with "Hello, World" printing program.
 
 Then to run this files:
 ``` bash
@@ -96,8 +96,8 @@ $ runnr hello.cpp
 Hello, World
 ```
 
-
-It can execute both the different files based on .conf file.
+It can execute different files based on .conf file.
+* It is important to note that the file that is being compiled/interpreted must be the last argument, after any options.
 
 - ### Only compiling not executing:
 We can make runnr to only compile a programs but not execute it by using '-run' argument.
@@ -166,6 +166,20 @@ $ runnr -args "5 7" sum_2_no.c
 
 Again it is necessary to wrap the arguemnts within "" as it containes spaces.
 
+- ### Executing multiple files at once:
+Multiple different or same file can be executed simultaneously using "-files" option.
+
+```bash
+$ runnr -run N -files hello.c hello.py hello.cpp sum.c
+```
+
+- By default all the input files gets executed. Use `-run N` to turn it off for compiled based language.
+- If any custom output file-name in set in the config or by using `-out` option, it will be ignored and the executable output name will be same as of the file-name without the extension.
+- After "-files" option all the arguments must be files.
+- For using "-args" option, all the executable will recieve same command-line argument.
+- "-param" option is ignored while using "-files", otherwise it will result in passing of same compiler/interpreter parameter to different compiler/interpreter. It is recommended to set these parameter options in config-file instead.
+- Opening of multiple files using "-open" isn't supported yet.
+
 - ### Debug:
 
 Sometimes developers need to see what actually getting executed by runnr to find any error or mis-compilation of programs & executions.To solve this a particular flag is to be used called "-debug". Why is it called flag? because it doesn't takes any arguments.
@@ -222,3 +236,6 @@ $ runnr -U
 ## v0.1.2b2
 - Removed unnecessary boolean variables from runnr_flags and replaced them with string operations.
 - Added "--update" or "-U" option to automatically update runnr using pip.
+
+## v0.1.2b3
+- Added option "-files" for compiling/interpreting multiple files at once.

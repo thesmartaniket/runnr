@@ -1,5 +1,5 @@
 class runnr_ver:
-    ver = 'v0.1.2b2'
+    ver = 'v0.1.2b3'
 
     runnr_help = """
 Usage:
