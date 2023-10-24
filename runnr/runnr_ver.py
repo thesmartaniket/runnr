@@ -1,5 +1,5 @@
 class runnr_ver:
-    ver = 'v0.1.2b1'
+    ver = 'v0.1.2b2'
 
     runnr_help = """
 Usage:
@@ -8,8 +8,9 @@ Usage:
 General Options:
     -h, --help                          Shows help.
     -V, --version                       Shows current runnr version.
+    -U, --update                        Checks and update runnr using pip.
     -debug <other-options> <file>       Prints executed runnr commands.
-    -run [Y/y, N,n] <file>              Sets running after compilation to on or off.
+    -run <Y/N> <file>              Sets running after compilation to on or off.
     -out <output-file-name> <file>      Sets output file name of the executable.
     -param <parameter> <file>           Passes additional configurations to the compiler/interpreter.
     -args <arguments> <file>            Passes additional command line arguments to the executable.

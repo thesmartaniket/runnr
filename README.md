@@ -201,14 +201,18 @@ runnr -h
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.1.2
+>v0.1.2 {NEXT}
 
 # ADDED IN BETA:
 - Version rule :: `<major>.<minor>.<patches>b<beta-version>`
 ## v0.1.2b0
 - Removed auto copying of "runnr.conf" while building the "setup.py".
-- Added help option "-help" or "-h".
+- Added help option "--help" or "-h".
 - Fixed the issue where runnr detects the single argument as file with no extension.
 
 ## v0.1.2b1
 - Fixed the issue where runnr ignore cli arguments for interpreted languages.
+
+## v0.1.2b2
+- Removed unnecessary boolean variables from runnr_flags and replaced them with string operations.
+- Added "--update" or "-U" option to automatically update runnr using pip.
