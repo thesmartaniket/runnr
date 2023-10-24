@@ -21,7 +21,6 @@ class runnr():
         self.setup_cli_param()
         self.split_extension()
         self.build_commands()
-        
         exit(0)
 
     #function to test if there is any argument or not
