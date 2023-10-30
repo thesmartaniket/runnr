@@ -42,7 +42,7 @@ All `<argument> = <parameter>` are separateed using ','. You can even comment in
 The extension must be enclosed withing parenthese: "()". Then the respective arguments & parameters are writen after using argument separator: "::". The arguments must be separated using "," and every argument must have its value/parameter enclosed withing double qoutes: "".
 
 - ## Supported Arguments:
-As of version: v0.0.8 suppported aruments are:
+As of version: v0.2.0 suppported aruments are:
 
 ```
 1. COMPILER="<compiler-name>"
@@ -100,7 +100,7 @@ It can execute different files based on .conf file.
 * It is important to note that the file that is being compiled/interpreted must be the last argument, after any options.
 
 - ### Only compiling not executing:
-We can make runnr to only compile a programs but not execute it by using '-run' argument.
+We can make runnr to only compile a programs but not execute it by using '-run' option.
 
 Example:
 ```bash
@@ -109,7 +109,7 @@ $ runnr -run N hello.cpp
 
 It outputs nothing as we set running after compilation to off. It just generates the binary executable file.
 
-This argument only works for compiled based programs like C, C++, rust. The "-run" argument parameter can be either "Y" or "N".
+This option only works for compiled based programs like C, C++, rust. The "-run" option's parameter can be either "Y" or "N".
 
 - ### Custom output file name for Compiled programs:
 
@@ -121,8 +121,8 @@ $ runnr -run N -out helloworld hello.cpp
 $ ./helloworld
 Hello, World
 ```
->Yes, we can use these different arguments and parameters all together.
-So, "-out" argument takes only one parameter that is the file name of the output file.
+>Yes, we can use these different options and parameters all together.
+So, "-out" option takes only one parameter that is the file name of the output file.
 
 - ### More compiler arguments:
 There may be some cases where we need to pass more compiler arguemnts to compile it. For example, in C++ we might need to tell the compiler to use C++11, as we have used 'auto' data-type in out program. 
@@ -130,7 +130,7 @@ There may be some cases where we need to pass more compiler arguemnts to compile
 This can be achieved by two ways:
 
 - Parmanent:
-Modifying the runnr.conf file for ".cpp" extension.
+Modifying the "runnr.conf" file for ".cpp" extension.
 
 Examples:
 ```
@@ -164,10 +164,10 @@ $ runnr -args "5 7" sum_2_no.c
 12
 ```
 
-Again it is necessary to wrap the arguemnts within "" as it containes spaces.
+Again it is necessary to wrap the arguments within "" as it containes spaces.
 
 - ### Executing multiple files at once:
-Multiple different or same file can be executed simultaneously using "-files" option.
+Multiple different or same files can be executed simultaneously using "-files" option.
 
 ```bash
 $ runnr -run N -files hello.c hello.py hello.cpp sum.c
@@ -178,11 +178,11 @@ $ runnr -run N -files hello.c hello.py hello.cpp sum.c
 - After "-files" option all the arguments must be files.
 - For using "-args" option, all the executable will recieve same command-line argument.
 - "-param" option is ignored while using "-files", otherwise it will result in passing of same compiler/interpreter parameter to different compiler/interpreter. It is recommended to set these parameter options in config-file instead.
-- Opening of multiple files using "-open" isn't supported yet.
+- Opening of multiple files using "-open" isn't implemented yet.
 
 - ### Debug:
 
-Sometimes developers need to see what actually getting executed by runnr to find any error or mis-compilation of programs & executions.To solve this a particular flag is to be used called "-debug". Why is it called flag? because it doesn't takes any arguments.
+Sometimes developers need to see what is actually getting executed by runnr to find any error or mis-compilation of programs & executions. To solve this a particular option is to be used called "-debug".
 
 Examples:
 ```bash
@@ -221,21 +221,14 @@ $ runnr -U
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.1.2 {NEXT}
+>v0.2.1
 
-# ADDED IN BETA:
-- Version rule :: `<major>.<minor>.<patches>b<beta-version>`
-## v0.1.2b0
-- Removed auto copying of "runnr.conf" while building the "setup.py".
-- Added help option "--help" or "-h".
-- Fixed the issue where runnr detects the single argument as file with no extension.
+# What's New in this Update:
 
-## v0.1.2b1
-- Fixed the issue where runnr ignore cli arguments for interpreted languages.
-
-## v0.1.2b2
-- Removed unnecessary boolean variables from runnr_flags and replaced them with string operations.
-- Added "--update" or "-U" option to automatically update runnr using pip.
-
-## v0.1.2b3
-- Added option "-files" for compiling/interpreting multiple files at once.
+1. Added help option "--help" or "-h".
+2. Added "--update" or "-U" option to automatically update runnr using pip.
+3. Added option "-files" for compiling/interpreting multiple files at once.
+4. Fixed the issue where runnr detects the single argument as file with no extension.
+5. Fixed the issue where runnr ignore cli arguments for interpreted languages.
+6. Removed auto copying of "runnr.conf" while building the "setup.py".
+7. Removed unnecessary boolean variables from runnr_flags and replaced them with string operations.

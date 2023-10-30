@@ -46,7 +46,7 @@ class runnr():
         if configs['type'] == 'c':
             if self.flags.l_file_names:
                 if self.flags.s_custom_output_file_name:
-                    print('runnr: warning: "-out" option does not work while using "-files".')
+                    print('runnr: warning: "-out" option does not work while using "-files"')
 
                 return [f'{self.flags.s_file_name}', f'-o {self.flags.s_file_name}']
             
@@ -71,7 +71,7 @@ class runnr():
     def executor_param(self) -> str:
         if self.flags.s_extra_param:
             if self.flags.l_file_names:
-                print('runnr: warning: "-param" option does not work while using "-files".')
+                print('runnr: warning: "-param" option does not work while using "-files"')
                 return ''
             
             return self.flags.s_extra_param
