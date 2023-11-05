@@ -1,5 +1,5 @@
 import sys
-from os import system, path
+from os import system, path, getcwd
 from .runnr_parser import runnr_parser, data
 from .runnr_flags import runnr_flags
 from .runnr_ver import runnr_ver
@@ -15,6 +15,7 @@ class runnr():
     def __init__(self):
         self.test_argv()
         self.parser = runnr_parser()
+        self.default_option()
         self.flags = runnr_flags()
         self.parser.init()
         self.setup_cli_param()
@@ -38,6 +39,16 @@ class runnr():
         if argc <= 1:
             print('runnr: error: no input file')
             exit(1)
+
+    #function to check the first parameter for "-default"
+    def default_option(self):
+        global argc
+
+        if argv[1] in ['-default', '-d']:
+            self.parser.default_path = True
+            argv.remove(argv[1])
+            argc -= 1
+            
 
     #function to return the output name & its command if it compiled based language else list of empty strings
     #parameters: configuration row for the given extension : dictionary
@@ -182,6 +193,26 @@ class runnr():
 
             case '--update' | '-U':
                 system('pip install --upgrade runnr')
+                exit(0)
+
+            case 'init' | '-i':
+                match sys.platform:
+                    case 'win32':
+                        f_path = f'{getcwd()}\\runnr.conf'
+
+                    case 'linux' | 'darwin':
+                        f_path = f'{getcwd()}/runnr.conf'
+
+                    case _:
+                        print(f'runnr: error: unsuported operation system {sys.platform}')
+                        exit(1)
+
+                if path.isfile(f_path):
+                    print(f'runnr: error: config file already exists in current directory "{f_path}"')
+                    exit(1)
+
+                f = open(f_path, 'w')
+                f.write('#Add your configs here for current working directory\n#Use "-default" option to use default config file')
                 exit(0)
 
             case '-open':

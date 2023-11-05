@@ -2,7 +2,7 @@ import sys
 from os import path
 
 class runnr_ver:
-    ver = 'v0.3.0b0'
+    ver = 'v0.3.0b1'
 
     runnr_help = """
 Usage:
@@ -16,6 +16,8 @@ General Options:
     --reset-config                      Resets config directory and its configurations to default.
     --set-path <full-path>              Sets new path as default for config file.
     --remove-path                       Removes custom path from config file.
+    init, -i                            Initializes a new config file in current working directory.
+    -default, -d                        Uses configs from default config file.
     -debug <other-options> <file>       Prints executed runnr commands.
     -run <Y/N> <file>                   Sets running after compilation to on or off.
     -out <output-file-name> <file>      Sets output file name of the executable.

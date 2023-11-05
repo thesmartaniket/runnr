@@ -16,9 +16,11 @@ data = """#PATH="<full-path>"
 (-open) :: USE="code" """
 
 class runnr_parser():
+    default_path : bool = False
+    custom_path : bool = False
+    runnr_config_table : [dict] = []
+
     def init(self):
-        self.custom_path : bool = False
-        self.runnr_config_table : [dict] = []
         self.set_path_and_lines()
 
         for i, line in enumerate(self.lines):
@@ -36,24 +38,30 @@ class runnr_parser():
         if not self.custom_path:
             match os_p:
                 case 'win32':
+                    self.same_dir_path = f"{os.getcwd()}\\runnr.conf"
                     self.path_of_config = f"{os.path.expanduser('~')}\\runnr.conf"        
                 case 'linux' | 'darwin':
+                    self.same_dir_path = f"{os.getcwd()}/runnr.conf"
                     self.path_of_config = os.path.expanduser('~') + '/.config/runnr.conf' 
             
                 case _ :
                     print(f'runnr: error: {os_p} is not supported at the moment')
                     exit(1)
 
-        try:
-            self.runnr_config_file = open(self.path_of_config, 'r')
-        except:
-            print(f'runnr: error: no config file found in "{self.path_of_config}"')
-            choice = input('Create a new config file? [Y/n]: ')
+        if os.path.isfile(self.same_dir_path) and not self.default_path:
+            self.runnr_config_file = open(self.same_dir_path, 'r')
+            self.path_of_config = self.same_dir_path
+        else:
+            try:
+                self.runnr_config_file = open(self.path_of_config, 'r')
+            except:
+                print(f'runnr: error: no config file found in "{self.path_of_config}"')
+                choice = input('Create a new config file? [Y/n]: ')
 
-            if not choice in ['N', 'n']:
-                self.create_config_file()
+                if not choice in ['N', 'n']:
+                    self.create_config_file()
 
-            exit(1)
+                exit(1)
 
         self.lines = self.runnr_config_file.readlines()
 
