@@ -1,5 +1,8 @@
+import sys
+from os import path
+
 class runnr_ver:
-    ver = 'v0.2.1'
+    ver = 'v0.3.0b0'
 
     runnr_help = """
 Usage:
@@ -9,6 +12,10 @@ General Options:
     -h, --help                          Shows help.
     -V, --version                       Shows current runnr version.
     -U, --update                        Checks and update runnr using pip.
+    --config                            Shows current directory of config file.
+    --reset-config                      Resets config directory and its configurations to default.
+    --set-path <full-path>              Sets new path as default for config file.
+    --remove-path                       Removes custom path from config file.
     -debug <other-options> <file>       Prints executed runnr commands.
     -run <Y/N> <file>                   Sets running after compilation to on or off.
     -out <output-file-name> <file>      Sets output file name of the executable.
@@ -18,3 +25,17 @@ General Options:
     -files <file1>, <file2>, ...        Executes multiple files simultaneously.
     
 """
+
+    def defaultPath(self) -> str:
+        match  sys.platform:
+            case 'win32':
+                return f"{path.expanduser('~')}\\runnr.conf"
+
+            case 'darwin' | 'linux':
+                return path.expanduser('~') + '/.config/runnr.conf' 
+
+            case _ :
+                print(f'runnr: error: unsuported operation system {sys.platform}')
+                exit(1)
+
+        return ''

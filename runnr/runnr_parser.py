@@ -1,7 +1,11 @@
 import sys
 import os
 
-data = """#config file syntax: (<extension-name>) :: <arguments> = <parameters>, ....
+data = """#PATH="<full-path>"
+#USE PATH="<full-path>" by removing '#' and setting a full-path in double-quotes. It is used to set custom config file path from different location.
+#PATH enviorment variable should be mentioned at line number: 1
+
+#config file syntax: (<extension-name>) :: <arguments> = <parameters>, ....
 #C
 (.c) :: COMPILER="gcc", OUTPUT_FILENAME="$FILE"
 #cpp
@@ -13,11 +17,35 @@ data = """#config file syntax: (<extension-name>) :: <arguments> = <parameters>,
 
 class runnr_parser():
     def init(self):
+        self.custom_path : bool = False
         self.runnr_config_table : [dict] = []
-        self.set_path()
+        self.set_path_and_lines()
+
+        for i, line in enumerate(self.lines):
+            self.runnr_parse_line(line.replace('\n', ''), i + 1)
+
+    def create_config_file(self):
+        f = open(self.path_of_config, 'w')
+        f.write(data)
+        exit(0)
+
+
+    def set_path_and_lines(self):
+        os_p : str = sys.platform
+
+        if not self.custom_path:
+            match os_p:
+                case 'win32':
+                    self.path_of_config = f"{os.path.expanduser('~')}\\runnr.conf"        
+                case 'linux' | 'darwin':
+                    self.path_of_config = os.path.expanduser('~') + '/.config/runnr.conf' 
+            
+                case _ :
+                    print(f'runnr: error: {os_p} is not supported at the moment')
+                    exit(1)
 
         try:
-            runnr_config_file = open(self.path_of_config, 'r')
+            self.runnr_config_file = open(self.path_of_config, 'r')
         except:
             print(f'runnr: error: no config file found in "{self.path_of_config}"')
             choice = input('Create a new config file? [Y/n]: ')
@@ -27,27 +55,18 @@ class runnr_parser():
 
             exit(1)
 
-        lines = runnr_config_file.readlines()
+        self.lines = self.runnr_config_file.readlines()
 
-        for i, line in enumerate(lines):
-            self.runnr_parse_line(line.replace('\n', ''), i + 1)
+        if not self.lines:
+            print(f'runnr: error: config: empty config file found at "{self.path_of_config}"')
+            choice = input(f'Write default config datas to "{self.path_of_config}"? [Y/n]: ')
 
-    def create_config_file(self):
-        f = open(self.path_of_config, 'w')
-        f.write(data)
-        exit(0)
+            if not choice in ['N', 'n']:
+                self.create_config_file()
 
-
-    def set_path(self):
-        os_p : str = sys.platform
-
-        if os_p == 'win32':
-            self.path_of_config = f"{os.path.expanduser('~')}\\runnr.conf"
-        elif os_p in ['linux', 'darwin']:
-            self.path_of_config = os.path.expanduser('~') + '/.config/runnr.conf' 
-        else:
-            print(f'runnr: error: {os_p} is not supported at the moment')
             exit(1)
+
+        self.runnr_parse_and_set_custom_path(self.lines[0])
 
 
     def runnr_parse_line(self, line : str, line_no : int):
@@ -136,5 +155,35 @@ class runnr_parser():
                 return rows
             
         return {}
+    
+    def runnr_parse_and_set_custom_path(self, line : str) -> bool:
+        if self.custom_path:
+            self.lines = self.lines[1:]
+            return
+
+        separator = line.find('=')
+        comment = line.find('#')
+
+        if comment != -1:
+            return
+
+        if separator != -1:
+            key, value = line[0:separator], line[separator + 1:]
+
+            if key == 'PATH':
+                value = value[value.find('"') + 1 : value.rfind('"')]
+
+                if not os.path.isfile(value):
+                    print(f'runnr: error: config: no config file found at "{value}"')
+                    exit(1)
+
+                self.path_of_config = value
+                self.custom_path = True
+                self.runnr_config_file.close()          
+                self.set_path_and_lines()
+            else:
+                print(f'runnr: error: config: unknown enviorment variable "{key}" at line number {1}')
+                exit(1)
+            
 
         

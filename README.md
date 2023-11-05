@@ -221,14 +221,15 @@ $ runnr -U
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.2.1
+>v0.3.0b0
 
 # What's New in this Update:
+>0.3 update will be focused arround improving the config file support and its options.
 
-1. Added help option "--help" or "-h".
-2. Added "--update" or "-U" option to automatically update runnr using pip.
-3. Added option "-files" for compiling/interpreting multiple files at once.
-4. Fixed the issue where runnr detects the single argument as file with no extension.
-5. Fixed the issue where runnr ignore cli arguments for interpreted languages.
-6. Removed auto copying of "runnr.conf" while building the "setup.py".
-7. Removed unnecessary boolean variables from runnr_flags and replaced them with string operations.
+## v0.3.0b0
++ Added support for changing the config file path using `PATH="<path>"` enviorment variable in default runnr.conf file. {This variable should be mentioned at the line number: 1}
++ Added "--config" option to show current default config file directory.
++ Added "--reset-config" option to reset default config file to its default values by erasing all configurations.
++ Added "--set-path" option to change config file directory to any other location. {Instead of manually adding the PATH in config file}
++ Added "--remove-path" option to remove custom added path to default.
++ Updated "--help" option for new config options.

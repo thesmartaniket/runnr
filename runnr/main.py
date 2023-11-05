@@ -1,6 +1,6 @@
 import sys
-from os import system
-from .runnr_parser import runnr_parser
+from os import system, path
+from .runnr_parser import runnr_parser, data
 from .runnr_flags import runnr_flags
 from .runnr_ver import runnr_ver
 
@@ -171,30 +171,90 @@ class runnr():
     #parameters: none
     # returns: none    
     def check_first_param(self) -> None:
-        if argv[1] in ['--version', '-V']:
-            print(f'{ver.ver}')
-            exit(0)
+        match argv[1]:
+            case '--version' | '-V':
+                print(f'{ver.ver}')
+                exit(0)
 
-        if argv[1] in ['--help', '-h']:
-            print(ver.runnr_help)
-            exit(0)
+            case '--help' | '-h':
+                print(ver.runnr_help)
+                exit(0)
 
-        if argv[1] in ['--update', '-U']:
-            system('pip install --upgrade runnr')
-            exit(0)
+            case '--update' | '-U':
+                system('pip install --upgrade runnr')
+                exit(0)
 
-        if argv[1] == '-open':
-            if argc == 2:
-                print('runnr: error: no input file for "-open"')
+            case '-open':
+                if argc == 2:
+                    print('runnr: error: no input file for "-open"')
+                    exit(1)
+
+                for rows in self.parser.runnr_config_table:
+                    if rows['extension'] == argv[1]:
+                        system(f"{rows['executor']} {argv[argc - 1]}")
+                        exit(0)
+
+                print(f'runnr: error: no config for "-open" found in "{self.parser.path_of_config}"')
                 exit(1)
 
-            for rows in self.parser.runnr_config_table:
-                if rows['extension'] == argv[1]:
-                    system(f"{rows['executor']} {argv[argc - 1]}")
+            case '--config':
+                print(self.parser.path_of_config)
+                exit(0)
+
+            case '--reset-config':
+                choice = input('This will erase and reset all of your configs and datas to deafult values. Proceed to reset? [y/N]: ')
+
+                if choice in  ['Y', 'y']:
+                    config_dir = ver.defaultPath()
+
+                    try:
+                        file_to_reset = open(config_dir, 'w')
+                    except:
+                        print(f'runnr: error: config: no config file found at {config_dir}')
+                        exit(1)
+
+                    file_to_reset.write(data)
+                    file_to_reset.close()
+                    exit(0)
+                else:
                     exit(0)
 
-            print(f'runnr: error: no config for "-open" found in "{self.parser.path_of_config}"')
-            exit(1)
+            case '--set-path':
+                if argc == 2:
+                    print('runnr: error: too few arguments for "--update-config" option. Use "runnr --help" to see its usage.')
+                    exit(1)
+
+                if not path.isfile(argv[2]):
+                    print(f'runnr: error: "{argv[2]}" doesn\'t exists')
+                    exit(1)
+
+                #reading
+                file_to_update = open(self.parser.path_of_config, 'r')
+                old_lines : [str] = file_to_update.readlines()
+                file_to_update.close()
+
+                #writing
+                file_to_update = open(self.parser.path_of_config, 'w')
+                old_lines.insert(0, f'PATH="{argv[2]}"\n')
+                file_to_update.writelines(old_lines)
+                file_to_update.close()
+
+                exit(0)
+
+            case '--remove-path':
+                #reading
+                file_to_update = open(ver.defaultPath(), 'r')
+                old_lines : list[str] = file_to_update.readlines()
+                file_to_update.close()
+
+                if old_lines[0].find('PATH') != -1 and old_lines[0].find('#') == -1:
+                    #writing
+                    file_to_update = open(ver.defaultPath(), 'w')
+                    file_to_update.writelines(old_lines[1:])
+                    file_to_update.close()
+
+                exit(0)
+
 
         if argc == 2 and argv[1][0] == '-':
             print(f'runnr: error: bad option: "{argv[1]}"')
@@ -219,7 +279,7 @@ class runnr():
     def build_commands(self,filename = argv[argc - 1]) -> None:
         config : dict = self.parser.runnr_get_extension_config(self.flags.s_extension)
         if not config:
-            print(f'runnr: error: file format is not found in "{self.parser.path_of_config}". Please add it to use it.')
+            print(f'runnr: error: file format not found in "{self.parser.path_of_config}". Please add it to use it.')
             exit(1)
 
         [output_name, output_command_w_name] = self.output_name(config)
