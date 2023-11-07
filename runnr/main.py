@@ -45,6 +45,10 @@ class runnr():
         global argc
 
         if argv[1] in ['-default', '-d']:
+            if argc < 3:
+                print('runnr: error: no input files')
+                exit(1)
+
             self.parser.default_path = True
             argv.remove(argv[1])
             argc -= 1
@@ -53,13 +57,17 @@ class runnr():
     #function to return the output name & its command if it compiled based language else list of empty strings
     #parameters: configuration row for the given extension : dictionary
     #returns: [file_name_without_extension, file_name_with_output_command] : [str, str]
-    def output_name(self, configs : [dict]) -> [str]:
+    def output_name(self, configs : dict) -> [str]:
         if configs['type'] == 'c':
             if self.flags.l_file_names:
                 if self.flags.s_custom_output_file_name:
                     print('runnr: warning: "-out" option does not work while using "-files"')
 
                 return [f'{self.flags.s_file_name}', f'-o {self.flags.s_file_name}']
+            
+            if 'out' not in configs:
+                print(f'runnr: error: config: no "OUTPUT_NAME" variable found for compiled type extension "({self.flags.s_extension})"')
+                exit(1)
             
             if self.flags.s_custom_output_file_name:
                 return [f'{self.flags.s_custom_output_file_name}', f'-o {self.flags.s_custom_output_file_name}']
@@ -72,6 +80,10 @@ class runnr():
                     return ['', '']
                 
                 case _:
+                    if '$' in configs['out']:
+                        print(f"runnr: error: config: unknown variable \"{configs['out']}\" in config file for extension \"({self.flags.s_extension})\"")
+                        exit(1)
+
                     return [f"{configs['out']}", f"-o {configs['out']}"]
         else:
             return ['', '']

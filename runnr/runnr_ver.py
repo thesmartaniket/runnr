@@ -2,7 +2,7 @@ import sys
 from os import path
 
 class runnr_ver:
-    ver = 'v0.3.0b1'
+    ver = 'v0.3.0b2'
 
     runnr_help = """
 Usage:

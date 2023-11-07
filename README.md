@@ -263,7 +263,7 @@ $ runnr --help
 $ runnr -h
 ```
 
-- ## Update:
+- ### Update:
 Update runnr using `--update or -U` option. It uses pip to update itself.
 ```bash
 $ runnr --update
@@ -275,7 +275,7 @@ $ runnr -U
 >v0.3.0b1
 
 # What's New in this Update:
->0.3 update will be focused arround improving the config file support and its options.
+>0.3 update will be focused arround improving the config file support and its options with bug fixes.
 
 ## v0.3.0b0
 + Added support for changing the config file path using `PATH="<path>"` enviorment variable in default runnr.conf file. {This variable should be mentioned at the line number: 1}
@@ -285,7 +285,14 @@ $ runnr -U
 + Added "--remove-path" option to remove custom added path to default.
 + Updated "--help" option for new config options.
 
-## v0.3.0.b1
+## v0.3.0b1
 
 + Added "init" or "-i" option to create config file in current-working-directory.
 + Added "-default" or "-d" option to use default config file instead of current-working-directory.
+
+## v0.3.0b2
+
++ Fixed the bug in config, where parser didn't checked wheter config-variables starting with "$" are correctly named or not for "OUTPUT_NAME".
++ Fixed the bug where "-default" option didn't checked if there are other options and files or not, causing runnr to crash due to accessing of argv's index that is out of range.
++ Fixed the bug for compiled languages where runnr didn't checked if "OUTPUT_FILENAME" was declared or not.
++ Removed unnecessary file "MANIFEST.in".
