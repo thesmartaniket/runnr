@@ -1,10 +1,12 @@
 # runnr
-runnr is an open-source command line interface tool for building, compiling & executing different programs & files.A single powerfull tool for developers to compile, open, build & interpret different programs.
+runnr is an open-source command line interface tool for building, compiling & executing different programs & files. Simple yet Powerful.
 
-runnr is currently in Beta stages [v0.x.x], most of the important features will be added in stable realease version [v1.x.x].
-# Installation
+runnr is currently in beta stages, any features or its usage may change unexpectedly. It is expected that until `v0.0.5` everything will be finalised and it will be the first stable release. 
 
+[Official Website](https://runnr-cli.vercel.app/)
 [Link to PyPi](https://pypi.org/project/runnr/)
+
+# Installation
 
 Install runnr with pip:
 ```bash
@@ -124,7 +126,7 @@ Hello, World
 >Yes, we can use these different options and parameters all together.
 So, "-out" option takes only one parameter that is the file name of the output file.
 
-- ### More compiler arguments:
+- ### More compiler arguments - 1:
 There may be some cases where we need to pass more compiler arguemnts to compile it. For example, in C++ we might need to tell the compiler to use C++11, as we have used 'auto' data-type in out program. 
 
 This can be achieved by two ways:
@@ -146,11 +148,33 @@ Examples:
 $ runnr -param "-std=c++11" -out helloworld hello.cpp
 ```
 
-"-param" takes the compiler arguemnt and directly pass it to the compiler. It is also a good practice to wrap them in "". "-param" can also be used to link to libaries too.
+"-param" takes the compiler arguemnt and directly pass it to the compiler. It is also a good practice to wrap them in "".
+
+- ### More compiler arguments - 2:
+While building a project we might use many libraries to make our task easy. For this in C/C++ we might need to specify the libraries(staic/dynamic) to compiler to link to while compiling. This can be achieved using "-link" option. "-link" option allows us to pass the neccessary library names to the compiler. "-link" option automatially adds "-l" to the library name so we only need to specify the library name. 
+
+For example I am building a program in C++ which uses fmt library.
+
+Example:
+```bash
+$ runnr -debug -link fmt hello.cpp
+runnr: debug: config: using config from "/home/aniket/.config/runnr.conf"
+runnr: debug: executed: "g++ hello.cpp -o hello -lfmt"
+runnr: debug: run: "./hello"
+Hello, World!
+```
+
+There might be some cases where you want to link multiple libraries at once. For that we can use:
 
 ```bash
-$ runnr -param -lm -out sqrt square_root.c
+$ runnr -debug -lf -link "-lfmt -lm" hello.cpp
+runnr: debug: config: using config from "/home/aniket/.config/runnr.conf"
+runnr: debug: executed: "g++ hello.cpp -o hello -lfmt -lm"
+runnr: debug: run: "./hello"
+Hello, World!
 ```
+
+"-lf" option disables the automatic addition of "-l" and passes the "-link" arguments directly to the compiler.
 
 - ### Execuable file's command-line arguemnts:
 You might write some programs that takes command line arguments directly, as runnr can compile and execute simultaneously, you might want to pass the necessary arguments to the program. This can be achieved by using "-args".
@@ -272,7 +296,7 @@ $ runnr -U
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.3.0b1
+>v0.3.0b3
 
 # What's New in this Update:
 >0.3 update will be focused arround improving the config file support and its options with bug fixes.
@@ -296,3 +320,9 @@ $ runnr -U
 + Fixed the bug where "-default" option didn't checked if there are other options and files or not, causing runnr to crash due to accessing of argv's index that is out of range.
 + Fixed the bug for compiled languages where runnr didn't checked if "OUTPUT_FILENAME" was declared or not.
 + Removed unnecessary file "MANIFEST.in".
+
+## v0.3.0b3
+
++ Fixed the bug where "-param" caused the command execution to break due to no space separation. 
++ Added "-link" option to link to libaries for C and C++ ["-link" option adds "-l" automatically] {Linking libaries using "-param" is deprecated as modern compilers takes liabries names as last argument.}
++ Added "-lf" option to stop auto addition of "-l" while using "-link".

@@ -97,7 +97,21 @@ class runnr():
                 print('runnr: warning: "-param" option does not work while using "-files"')
                 return ''
             
-            return self.flags.s_extra_param
+            return ' ' + self.flags.s_extra_param
+        else:
+            return ''
+        
+    def executor_lib_link(self, config: dict) -> str:
+        if self.flags.s_lib_link:
+            if self.flags.l_file_names:
+                print('runnr: warning: "-link" option does not work while using "-files"')
+                return ''
+            
+            if config['type'] == 'i':
+                print('runnr: warning: "-link" option does not work for interpreted type languages')
+                return ''
+            
+            return (' -l' if self.flags.b_link_add_l else ' ') + self.flags.s_lib_link
         else:
             return ''
 
@@ -169,6 +183,21 @@ class runnr():
                         i += 1
                     else:
                         print('runnr: error: multiple use of option "-param"')
+                        exit(1)
+
+                case '-link':
+                    if not self.flags.s_lib_link:
+                        self.flags.s_lib_link = argv[i + 1]
+                        i += 1
+                    else:
+                        print('runnr: error: multiple use of option "-link"')
+                        exit(1)
+
+                case '-lf':
+                    if self.flags.b_link_add_l:
+                        self.flags.b_link_add_l = False
+                    else:
+                        print('runnr: error: multiple use of option "-lf"')
                         exit(1)
 
                 case '-args':
@@ -268,7 +297,7 @@ class runnr():
                     exit(1)
 
                 if not path.isfile(argv[2]):
-                    print(f'runnr: error: "{argv[2]}" doesn\'t exists')
+                    print(f'runnr: error: "{argv[2]}" is not a file')
                     exit(1)
 
                 #reading
@@ -327,7 +356,7 @@ class runnr():
 
         [output_name, output_command_w_name] = self.output_name(config)
         args_for_i = self.flags.s_extra_args if self.flags.s_extra_args and config['type'] == 'i' else ''
-        command = f"{config['executor']}{self.executor_param()} {filename} {output_command_w_name}{args_for_i}"
+        command = f"{config['executor']}{self.executor_param()} {filename} {output_command_w_name}{args_for_i}{self.executor_lib_link(config)}"
 
         if self.flags.b_debug_mode:
             print(f'runnr: debug: config: using config from "{self.parser.path_of_config}"')
