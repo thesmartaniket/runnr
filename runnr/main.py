@@ -214,7 +214,7 @@ class runnr():
 
                 case _:
                     if argv[i][0] == '-':
-                        print(f'runnr: error: bad option: "{argv[i]}"')
+                        print(f'runnr: error: bad option: "{argv[i]}"\nTry "runnr --help" for more information.')
                         exit(1)
         
             i += 1
@@ -329,7 +329,7 @@ class runnr():
 
 
         if argc == 2 and argv[1][0] == '-':
-            print(f'runnr: error: bad option: "{argv[1]}"')
+            print(f'runnr: error: bad option: "{argv[1]}"\nTry "runnr --help" for more information.')
             exit(1)
 
     #function to split the name by '.' dot

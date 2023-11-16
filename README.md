@@ -4,6 +4,7 @@ runnr is an open-source command line interface tool for building, compiling & ex
 runnr is currently in beta stages, any features or its usage may change unexpectedly. It is expected that until `v0.0.5` everything will be finalised and it will be the first stable release. 
 
 [Official Website](https://runnr-cli.vercel.app/)
+
 [Link to PyPi](https://pypi.org/project/runnr/)
 
 # Installation
@@ -296,7 +297,7 @@ $ runnr -U
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.3.0b3
+>v0.3.0b4
 
 # What's New in this Update:
 >0.3 update will be focused arround improving the config file support and its options with bug fixes.
@@ -326,3 +327,8 @@ $ runnr -U
 + Fixed the bug where "-param" caused the command execution to break due to no space separation. 
 + Added "-link" option to link to libaries for C and C++ ["-link" option adds "-l" automatically] {Linking libaries using "-param" is deprecated as modern compilers takes liabries names as last argument.}
 + Added "-lf" option to stop auto addition of "-l" while using "-link".
+
+## v0.3.0b4
+
++ Minor bug fixes.
++ Minor changes on prompt messages.
