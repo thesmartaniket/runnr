@@ -91,19 +91,23 @@ class runnr_parser():
             exit(1)
 
         un_p_extension, un_p_arguments = line.split('::')
-        self.runnr_parse_extension(un_p_extension, line_no, parsed_data_list)
+        self.runnr_parse_extension(un_p_extension, line, line_no, parsed_data_list)
         self.runnr_parse_tokens(un_p_arguments, line_no, parsed_data_list)
 
         self.runnr_config_table.append({key : parsed_data_list[key]  for key in parsed_data_list})
         parsed_data_list.clear()
 
 
-    def runnr_parse_extension(self, un_p_extension : str, line_no : int, parsed_data : dict) -> None:
+    def runnr_parse_extension(self, un_p_extension : str, line : str, line_no : int, parsed_data : dict) -> None:
         extension = un_p_extension[un_p_extension.find('(') + 1 : un_p_extension.rfind(')')].replace(' ', '')
 
         if extension.find(')') != -1 or extension.find('(') != -1:
             print(f'runnr: syntax error: config: multiple parentheses in "{un_p_extension}" at line number {line_no}. Extension must be wrapped with only one level of parentheses "(<extension>)"')
             exit(1)
+
+        if extension == 'var':
+            self.runnr_set_variables(line, line_no, parsed_data)
+            return
 
         if not extension[1:].isalpha():
             print(f'runnr: error: config: "{extension}" is not a valid extension at line number {line_no}')
@@ -168,6 +172,9 @@ class runnr_parser():
         if self.custom_path:
             self.lines = self.lines[1:]
             return
+        
+        if line.find('::') != - 1:
+            return
 
         separator = line.find('=')
         comment = line.find('#')
@@ -192,6 +199,16 @@ class runnr_parser():
             else:
                 print(f'runnr: error: config: unknown enviorment variable "{key}" at line number {1}')
                 exit(1)
-            
+
+    def runnr_set_variables(self, line :  str, line_no : int, parsed_data : dict):
+        if line.find('::') == -1:
+            print(f'runnr: config: error: no "::" separator found for variable declaration at line number {line_no}')
+            exit(1)
+
+        if line.count('::') > 1:
+            print(f'runnr: config: error: multiple "::" separator found for variable declaration at line number {line_no}')
+            exit(1)
+
+        _, name = line.split('::')
 
         

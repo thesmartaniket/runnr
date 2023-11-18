@@ -327,7 +327,7 @@ class runnr():
 
         [output_name, output_command_w_name] = self.output_name(config)
         args_for_i = self.flags.s_extra_args if self.flags.s_extra_args and config['type'] == 'i' else ''
-        command = f"{config['executor']}{self.executor_param()} {filename} {output_command_w_name}{args_for_i}"
+        command = f"{config['executor']} {filename} {output_command_w_name} {args_for_i} {self.executor_param()}"
 
         if self.flags.b_debug_mode:
             print(f'runnr: debug: config: using config from "{self.parser.path_of_config}"')
