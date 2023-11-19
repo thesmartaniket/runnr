@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "runnr"
-version = "0.3.0b4"
+version = "0.3.0"
 authors = [
   { name="Aniket Biswas", email="contact.aniket.biswas@gmail.com" },
 ]
@@ -18,4 +18,4 @@ classifiers = [
 ]
 
 [project.urls]
-"Home Page" = "https://github.com/thesmartaniket/runnr"
+"Home Page" = "https://runnr-cli.vercel.app/"

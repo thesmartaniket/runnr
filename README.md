@@ -297,38 +297,22 @@ $ runnr -U
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.3.0b4
+>v0.3.0
 
 # What's New in this Update:
->0.3 update will be focused arround improving the config file support and its options with bug fixes.
+>0.3 update is focused arround improving the runnr, config file support and its options with bug fixes.
 
-## v0.3.0b0
-+ Added support for changing the config file path using `PATH="<path>"` enviorment variable in default runnr.conf file. {This variable should be mentioned at the line number: 1}
-+ Added "--config" option to show current default config file directory.
-+ Added "--reset-config" option to reset default config file to its default values by erasing all configurations.
-+ Added "--set-path" option to change config file directory to any other location. {Instead of manually adding the PATH in config file}
-+ Added "--remove-path" option to remove custom added path to default.
-+ Updated "--help" option for new config options.
-
-## v0.3.0b1
-
-+ Added "init" or "-i" option to create config file in current-working-directory.
-+ Added "-default" or "-d" option to use default config file instead of current-working-directory.
-
-## v0.3.0b2
-
-+ Fixed the bug in config, where parser didn't checked wheter config-variables starting with "$" are correctly named or not for "OUTPUT_NAME".
-+ Fixed the bug where "-default" option didn't checked if there are other options and files or not, causing runnr to crash due to accessing of argv's index that is out of range.
-+ Fixed the bug for compiled languages where runnr didn't checked if "OUTPUT_FILENAME" was declared or not.
-+ Removed unnecessary file "MANIFEST.in".
-
-## v0.3.0b3
-
-+ Fixed the bug where "-param" caused the command execution to break due to no space separation. 
-+ Added "-link" option to link to libaries for C and C++ ["-link" option adds "-l" automatically] {Linking libaries using "-param" is deprecated as modern compilers takes liabries names as last argument.}
-+ Added "-lf" option to stop auto addition of "-l" while using "-link".
-
-## v0.3.0b4
-
-+ Minor bug fixes.
-+ Minor changes on prompt messages.
+1. Added support for changing the config file path using `PATH="<path>"` enviorment variable in default runnr.conf file. {This variable should be mentioned at the line number: 1}
+2. Added "--config" option to show current default config file directory.
+3. Added "--reset-config" option to reset default config file to its default values by erasing all configurations.
+4. Added "--set-path" option to change config file directory to any other location. {Instead of manually adding the PATH in config file}
+5. Added "--remove-path" option to remove custom added path to default.
+6. Added "init" or "-i" option to create config file in current-working-directory.
+7. Added "-default" or "-d" option to use default config file instead of current-working-directory.
+8. Added "-link" option to link to libaries for C and C++ ["-link" option adds "-l" automatically] {Linking libaries using "-param" is deprecated as modern compilers takes liabries names as last argument.}
+9. Added "-lf" option to stop auto addition of "-l" while using "-link".
+10. Fixed the bug in config, where parser didn't checked wheter config-variables starting with "$" are correctly named or not for "OUTPUT_NAME".
+11. Fixed the bug for compiled languages where runnr didn't checked if "OUTPUT_FILENAME" was declared or not.
+12. Fixed the bug where "-param" caused the command execution to break due to no space separation. 
+13. Updated "--help" option for new config options.
+14. Removed unnecessary file "MANIFEST.in".
