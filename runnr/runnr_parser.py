@@ -91,32 +91,32 @@ class runnr_parser():
             exit(1)
 
         un_p_extension, un_p_arguments = line.split('::')
-        self.runnr_parse_extension(un_p_extension, line, line_no, parsed_data_list)
-        self.runnr_parse_tokens(un_p_arguments, line_no, parsed_data_list)
+        isExtension = self.runnr_parse_extension(un_p_extension, line, line_no, parsed_data_list)
+        self.runnr_parse_tokens(un_p_arguments, line_no, parsed_data_list, isExtension)
 
         self.runnr_config_table.append({key : parsed_data_list[key]  for key in parsed_data_list})
         parsed_data_list.clear()
 
 
-    def runnr_parse_extension(self, un_p_extension : str, line : str, line_no : int, parsed_data : dict) -> None:
+    def runnr_parse_extension(self, un_p_extension : str, line : str, line_no : int, parsed_data : dict) -> bool:
         extension = un_p_extension[un_p_extension.find('(') + 1 : un_p_extension.rfind(')')].replace(' ', '')
 
         if extension.find(')') != -1 or extension.find('(') != -1:
             print(f'runnr: syntax error: config: multiple parentheses in "{un_p_extension}" at line number {line_no}. Extension must be wrapped with only one level of parentheses "(<extension>)"')
             exit(1)
 
-        if extension == 'var':
-            self.runnr_set_variables(line, line_no, parsed_data)
-            return
+        if extension == 'let':
+            return False
 
         if not extension[1:].isalpha():
             print(f'runnr: error: config: "{extension}" is not a valid extension at line number {line_no}')
             exit(1)
 
         parsed_data['extension'] = extension
+        return True
 
 
-    def runnr_parse_tokens(self, un_p_arguments : str, line_no : int, parsed_data : dict) -> None:
+    def runnr_parse_tokens(self, un_p_arguments : str, line_no : int, parsed_data : dict, isExtension : bool) -> None:
         if un_p_arguments.isspace():
             print(f'runnr: syntax error: config: at least one argument is required for an defined extension at line number {line_no}')
             exit(1)
@@ -132,34 +132,49 @@ class runnr_parser():
                 print(f'runnr: syntax error: config: empty argument between "," at line number {line_no}')
                 exit(1)
 
+            if tokens[i].find('=') == -1:
+                if isExtension:
+                    print(f'runnr: syntax error: config: error at line number {line_no}. No value assignment found for {tokens[i]}')
+                    exit(1)
+                else:
+                    print(f'runnr: syntax error: config: error at line number {line_no}. No variable\'s value assignment for {tokens[i]}')
+                    exit(1)
+
             if tokens[i].find('"') == -1:
-                print(f'runnr: syntax error: config: error at line number {line_no}. All arguments\'s parameters much be wrapped in " "')
-                exit(1)
+                if isExtension:
+                    print(f'runnr: syntax error: config: error at line number {line_no}. All arguments\'s parameters much be wrapped in " "')
+                    exit(1)
+                else:
+                    print(f'runnr: syntax error: config: error at line number {line_no}. All variable\'s value much be wrapped in " "')
+                    exit(1)
 
             param = tokens[i][tokens[i].find('"') + 1:tokens[i].rfind('"')]
             args = tokens[i].replace(param, '').replace(' ', '').replace('=', '').replace('"', '')
-            self.runnr_set_args_param(args, param, line_no, parsed_data)
+            self.runnr_set_args_param(args, param, line_no, parsed_data, isExtension)
 
 
-    def runnr_set_args_param(self, args : str, param : str, line_no : int, parsed_data : dict):
-        match args:
-            case 'COMPILER':
-                parsed_data['executor'] = param
-                parsed_data['type'] = 'c'
+    def runnr_set_args_param(self, args : str, param : str, line_no : int, parsed_data : dict, isExtension : bool):
+        if isExtension:
+            match args:
+                case 'COMPILER':
+                    parsed_data['executor'] = param
+                    parsed_data['type'] = 'c'
 
-            case 'INTERPRETER':
-                parsed_data['executor'] = param
-                parsed_data['type'] = 'i'
+                case 'INTERPRETER':
+                    parsed_data['executor'] = param
+                    parsed_data['type'] = 'i'
 
-            case 'OUTPUT_FILENAME':
-                parsed_data['out'] = param
+                case 'OUTPUT_FILENAME':
+                    parsed_data['out'] = param
 
-            case 'USE':
-                parsed_data['executor'] = param
+                case 'USE':
+                    parsed_data['executor'] = param
 
-            case _:
-                print(f'runnr: error: config: unknown argument "{args}" at line number {line_no}')
-                exit(1)
+                case _:
+                    print(f'runnr: error: config: unknown argument "{args}" at line number {line_no}')
+                    exit(1)
+        else:
+            parsed_data[args] = param
 
     def runnr_get_extension_config(self, extension : str) -> dict:
         for rows in self.runnr_config_table:
@@ -199,16 +214,3 @@ class runnr_parser():
             else:
                 print(f'runnr: error: config: unknown enviorment variable "{key}" at line number {1}')
                 exit(1)
-
-    def runnr_set_variables(self, line :  str, line_no : int, parsed_data : dict):
-        if line.find('::') == -1:
-            print(f'runnr: config: error: no "::" separator found for variable declaration at line number {line_no}')
-            exit(1)
-
-        if line.count('::') > 1:
-            print(f'runnr: config: error: multiple "::" separator found for variable declaration at line number {line_no}')
-            exit(1)
-
-        _, name = line.split('::')
-
-        

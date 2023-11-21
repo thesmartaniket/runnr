@@ -13,11 +13,15 @@ argv = sys.argv
 class runnr():
     #intialises the runnr
     def __init__(self):
-        self.test_argv()
         self.parser = runnr_parser()
-        self.default_option()
         self.flags = runnr_flags()
+
+        self.test_argv()
+        self.default_option()
+
+        self.check_first_param()
         self.parser.init()
+
         self.setup_cli_param()
 
         if self.flags.l_file_names:
@@ -66,7 +70,7 @@ class runnr():
                 return [f'{self.flags.s_file_name}', f'-o {self.flags.s_file_name}']
             
             if 'out' not in configs:
-                print(f'runnr: error: config: no "OUTPUT_NAME" variable found for compiled type extension "({self.flags.s_extension})"')
+                print(f'runnr: error: config: no "OUTPUT_FILENAME" variable found for compiled type extension "({self.flags.s_extension})"')
                 exit(1)
             
             if self.flags.s_custom_output_file_name:
@@ -146,8 +150,6 @@ class runnr():
     #parameters: none
     #returns: none
     def setup_cli_param(self) -> None:
-        self.check_first_param()
-
         i = 1
         while(i < argc - 1):
             match argv[i]:
@@ -256,7 +258,32 @@ class runnr():
                 f.write('#Add your configs here for current working directory\n#Use "-default" option to use default config file')
                 exit(0)
 
+            case '-exc' | '-e':
+                self.parser.init()
+
+                if argc == 2:
+                    print('runnr: error: no command name for "-exc" or "-e"')
+                    exit(1)
+
+                i = -1
+                for index, conf in enumerate(self.parser.runnr_config_table):
+                    if argv[argc - 1] in conf:
+                        i = index
+                        break
+
+                if i == -1:
+                    print(f'runnr: error: no variable "{argv[argc - 1]}" found in "{self.parser.path_of_config}"')
+                    exit(1)
+
+                print(f'runnr: debug: executed: {self.parser.runnr_config_table[i][argv[argc - 1]]}')
+
+                system(self.parser.runnr_config_table[i][argv[argc - 1]])
+                exit(0)
+
+
             case '-open':
+                self.parser.init()
+
                 if argc == 2:
                     print('runnr: error: no input file for "-open"')
                     exit(1)
@@ -270,6 +297,7 @@ class runnr():
                 exit(1)
 
             case '--config':
+                self.parser.set_path_and_lines()
                 print(self.parser.path_of_config)
                 exit(0)
 
@@ -301,12 +329,12 @@ class runnr():
                     exit(1)
 
                 #reading
-                file_to_update = open(self.parser.path_of_config, 'r')
+                file_to_update = open(ver.defaultPath(), 'r')
                 old_lines : [str] = file_to_update.readlines()
                 file_to_update.close()
 
                 #writing
-                file_to_update = open(self.parser.path_of_config, 'w')
+                file_to_update = open(ver.defaultPath(), 'w')
                 old_lines.insert(0, f'PATH="{argv[2]}"\n')
                 file_to_update.writelines(old_lines)
                 file_to_update.close()

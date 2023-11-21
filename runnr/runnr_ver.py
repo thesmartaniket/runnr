@@ -2,7 +2,7 @@ import sys
 from os import path
 
 class runnr_ver:
-    ver = 'v0.3.0b4'
+    ver = 'v0.4.0b0'
 
     runnr_help = """
 Usage:
@@ -27,10 +27,11 @@ General Options:
     -out <output-file-name> <file>      Sets output file name of the executable.
     -param <parameter> <file>           Passes additional configurations to the compiler/interpreter.
     -args <arguments> <file>            Passes additional command line arguments to the executable.
-    -open <file>                        Opens a file in a program. (Uses "-open" configuration from runnr.conf)
+    -open <file>                        Opens a file in a program. (Uses "-open" configuration from runnr config)
     -files <file1>, <file2>, ...        Executes multiple files simultaneously.
     -link <library-name>                Passes specified libaray name to the compiler while automatically adding "-l".
     -lf                                 Disables auto addition of "-l" in "-link" option.
+    -exc, -e <variable-name>            Executes a command from variable in runnr config.
 """
 
     def defaultPath(self) -> str:
