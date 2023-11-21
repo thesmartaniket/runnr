@@ -19,4 +19,4 @@ classifiers = [
 dynamic=["scripts"]
 
 [project.urls]
-"Home Page" = "https://github.com/thesmartaniket/runnr"
+"Home Page" = "https://runnr-cli.vercel.app/"
