@@ -2,7 +2,7 @@ import sys
 from os import path
 
 class runnr_ver:
-    ver = 'v0.4.0b0'
+    ver = 'v0.4.0b1'
 
     runnr_help = """
 Usage:
@@ -37,10 +37,10 @@ General Options:
     def defaultPath(self) -> str:
         match  sys.platform:
             case 'win32':
-                return f"{path.expanduser('~')}\\runnr.conf"
+                return f"{path.expanduser('~')}\\config.runnr"
 
             case 'darwin' | 'linux':
-                return path.expanduser('~') + '/.config/runnr.conf' 
+                return path.expanduser('~') + '/.config/config.runnr' 
 
             case _ :
                 print(f'runnr: error: unsuported operation system {sys.platform}')

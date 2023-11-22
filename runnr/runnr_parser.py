@@ -5,6 +5,7 @@ data = """#PATH="<full-path>"
 #USE PATH="<full-path>" by removing '#' and setting a full-path in double-quotes. It is used to set custom config file path from different location.
 #PATH enviorment variable should be mentioned at line number: 1
 
+(let)::ver="runnr -V"
 #config file syntax: (<extension-name>) :: <arguments> = <parameters>, ....
 #C
 (.c) :: COMPILER="gcc", OUTPUT_FILENAME="$FILE"
@@ -38,11 +39,11 @@ class runnr_parser():
         if not self.custom_path:
             match os_p:
                 case 'win32':
-                    self.same_dir_path = f"{os.getcwd()}\\runnr.conf"
-                    self.path_of_config = f"{os.path.expanduser('~')}\\runnr.conf"        
+                    self.same_dir_path = f"{os.getcwd()}\\config.runnr"
+                    self.path_of_config = f"{os.path.expanduser('~')}\\config.runnr"        
                 case 'linux' | 'darwin':
-                    self.same_dir_path = f"{os.getcwd()}/runnr.conf"
-                    self.path_of_config = os.path.expanduser('~') + '/.config/runnr.conf' 
+                    self.same_dir_path = f"{os.getcwd()}/config.runnr"
+                    self.path_of_config = os.path.expanduser('~') + '/.config/config.runnr'
             
                 case _ :
                     print(f'runnr: error: {os_p} is not supported at the moment')
@@ -170,15 +171,23 @@ class runnr_parser():
                 case 'USE':
                     parsed_data['executor'] = param
 
+                case 'BUILD':
+                    parsed_data['build'] = param
+
                 case _:
                     print(f'runnr: error: config: unknown argument "{args}" at line number {line_no}')
                     exit(1)
         else:
+            for data in self.runnr_config_table:
+                if args in data:
+                    data[args] = param
+                    return
+                
             parsed_data[args] = param
 
     def runnr_get_extension_config(self, extension : str) -> dict:
         for rows in self.runnr_config_table:
-            if rows['extension'] == extension:
+            if 'extension' in rows and rows['extension'] == extension:
                 return rows
             
         return {}

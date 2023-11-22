@@ -52,6 +52,7 @@ As of version: v0.2.0 suppported aruments are:
 2. INTERPRETER="<interpreter-name>"
 3. USE=<cli-program> : It is used for special arguments like "-open"
 4. OUTPUT_FILENAME=<variables or name> : It is used for setting special output name.
+5. BUILD="<directory>" : It is used for specifying the build directory.
 ```
 
 - ### Output Name Values:
@@ -315,13 +316,20 @@ $ runnr -U
 
 # VERSION:
 - Version rule :: `<major>.<minor>.<patches>`
->v0.4.0b0
+>v0.4.0b1
 
 # What's New in this Update:
 >0.4 update will be focused arround variable declarations & its operations in config file with bug fixes.
 
 ## v0.4.0b0
 + Added support for declaring variables in config. [more](https://github.com/thesmartaniket/runnr#declaring-command-variables-and-executing-them)
-+ Fixed an bug where adding a new path while a path is already set, doesn't add it to the default config file.
++ Fixed a bug where adding a new path while a path is already set, doesn't add it to the default config file.
 + Now executing only one command doesn't run the parser if it is not required. This change makes runnr a bit more faster and efficient.
 + Added option "-exc" or "-e" for executing custom declared command in runnr config. [more](https://github.com/thesmartaniket/runnr#declaring-command-variables-and-executing-them)
+
+## v0.4.0b1
++ Fixed a bug where reassining new value to same named variable didn't changed its value.
++ Fixed a bug where extension checking was giving error as not all dictionary have 'extension' key.
++ Added "BUILD" argument in config to set custom directory for outputing build files to a specific directory. [ Not implemented in runnr yet ]
++ Changed the name for default config file from "runnr.conf" to "config.runnr".
++ Added file's extension checking for config file. [ A runnr config file's extension must be ".runnr" ]

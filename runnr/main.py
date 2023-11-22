@@ -241,10 +241,10 @@ class runnr():
             case 'init' | '-i':
                 match sys.platform:
                     case 'win32':
-                        f_path = f'{getcwd()}\\runnr.conf'
+                        f_path = f'{getcwd()}\\config.runnr'
 
                     case 'linux' | 'darwin':
-                        f_path = f'{getcwd()}/runnr.conf'
+                        f_path = f'{getcwd()}/config.runnr'
 
                     case _:
                         print(f'runnr: error: unsuported operation system {sys.platform}')
@@ -324,8 +324,17 @@ class runnr():
                     print('runnr: error: too few arguments for "--update-config" option. Use "runnr --help" to see its usage.')
                     exit(1)
 
+                dot = argv[2].rfind('.')
+                if dot ==  -1:
+                    print(f'runnr: error: file "{argv[2]}" have no extension')
+                    exit(1)
+
+                if argv[2][dot:] != '.runnr':
+                    print(f'runnr: error: file\'s extension must be ".runnr".')
+                    exit(1)
+
                 if not path.isfile(argv[2]):
-                    print(f'runnr: error: "{argv[2]}" is not a file')
+                    print(f'runnr: error: no file "{argv[2]}" found')
                     exit(1)
 
                 #reading
